@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Electricity Usage Prediction</title>
+</head>
+<body>
+    <h1>Upload Your Electricity Data</h1>
+    
+    <!-- Form to upload the CSV file -->
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <label for="file">Choose CSV file:</label>
+        <input type="file" name="file" accept=".csv" required>
+        <button type="submit">Upload</button>
+    </form>
+
+    <hr>
+    
+    <h2>Prediction Results</h2>
+    <div id="prediction-results">
+        <!-- Results will be displayed here after the user uploads a file -->
+    </div>
+
+    <script>
+        // Function to handle the display of results
+        async function handleResults() {
+            const form = document.querySelector('form');
+            const formData = new FormData(form);
+            
+            const response = await fetch('/', {
+                method: 'POST',
+                body: formData,
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+
+                // Handle the predictions and display them
+                const resultsDiv = document.getElementById('prediction-results');
+                resultsDiv.innerHTML = `
+                    <h3>Predictions</h3>
+                    <pre>${JSON.stringify(data.predictions, null, 2)}</pre>
+                    <h3>Original Data</h3>
+                    <pre>${JSON.stringify(data.original_data, null, 2)}</pre>
+                `;
+            } else {
+                console.error("Error uploading file");
+            }
+        }
+    </script>
+</body>
+</html>
